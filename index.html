@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decision Intelligence Tool</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="theme-toggle">
+            <button id="themeToggle" onclick="toggleTheme()">
+                <span class="theme-icon">🌙</span>
+            </button>
+        </div>
+        
+        <div class="language-toggle">
+            <button id="languageToggle" onclick="toggleLanguage()">
+                <span class="lang-option active" data-lang="en">EN</span>
+                <span class="lang-divider">|</span>
+                <span class="lang-option" data-lang="hi">HI</span>
+            </button>
+        </div>
+        
+        <header>
+            <h1 data-en="Decision Intelligence Tool" data-hi="निर्णय बुद्धिमत्ता उपकरण">Decision Intelligence Tool</h1>
+            <p data-en="Describe your problem and get 3 smart options to consider" data-hi="अपनी समस्या बताएं और 3 स्मार्ट विकल्प पाएं">Describe your problem and get 3 smart options to consider</p>
+        </header>
+
+        <div class="input-section">
+            <div class="input-container">
+                <textarea 
+                    id="problemInput" 
+                    placeholder="Type your problem here..."
+                    rows="4"
+                ></textarea>
+                <button id="voiceBtn" class="voice-btn" title="Voice Input">
+                    <svg class="mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                        <line x1="12" y1="19" x2="12" y2="23"></line>
+                        <line x1="8" y1="23" x2="16" y2="23"></line>
+                    </svg>
+                    <div class="pulse-ring"></div>
+                </button>
+            </div>
+            
+            <div class="preferences-section">
+                <h3 data-en="Your Preferences" data-hi="आपकी पसंद">Your Preferences</h3>
+                <div class="sliders-grid">
+                    <div class="slider-group">
+                        <label for="budgetSlider" data-en="Budget Priority" data-hi="बजट प्राथमिकता">Budget Priority</label>
+                        <div class="slider-container">
+                            <span class="slider-label" data-en="Cost-effective" data-hi="किफायती">Cost-effective</span>
+                            <input type="range" id="budgetSlider" min="0" max="100" value="50" class="preference-slider">
+                            <span class="slider-label" data-en="Premium" data-hi="प्रीमियम">Premium</span>
+                        </div>
+                        <div class="slider-value" id="budgetValue">50</div>
+                    </div>
+                    
+                    <div class="slider-group">
+                        <label for="riskSlider" data-en="Risk Appetite" data-hi="जोखिम लेने की क्षमता">Risk Appetite</label>
+                        <div class="slider-container">
+                            <span class="slider-label" data-en="Conservative" data-hi="सुरक्षित">Conservative</span>
+                            <input type="range" id="riskSlider" min="0" max="100" value="50" class="preference-slider">
+                            <span class="slider-label" data-en="Aggressive" data-hi="आक्रामक">Aggressive</span>
+                        </div>
+                        <div class="slider-value" id="riskValue">50</div>
+                    </div>
+                    
+                    <div class="slider-group">
+                        <label for="timelineSlider" data-en="Timeline Focus" data-hi="समय सीमा">Timeline Focus</label>
+                        <div class="slider-container">
+                            <span class="slider-label" data-en="Short-term" data-hi="अल्पकालिक">Short-term</span>
+                            <input type="range" id="timelineSlider" min="0" max="100" value="50" class="preference-slider">
+                            <span class="slider-label" data-en="Long-term" data-hi="दीर्घकालिक">Long-term</span>
+                        </div>
+                        <div class="slider-value" id="timelineValue">50</div>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="analyzeBtn" onclick="analyzeDecision()">
+                <span id="btnText" data-en="Analyze Options" data-hi="विकल्पों का विश्लेषण">Analyze Options</span>
+                <span id="loadingSpinner" class="spinner hidden"></span>
+            </button>
+        </div>
+
+        <div id="results" class="results-section hidden">
+            <h2 data-en="Your 3 Options" data-hi="आपके 3 विकल्प">Your 3 Options</h2>
+            <div class="options-grid" id="optionsGrid">
+                <!-- Options will be populated here -->
+            </div>
+            
+            <div class="sacrifice-comparison" id="sacrificeComparison">
+                <h3 data-en="What You Sacrifice - Direct Comparison" data-hi="आप क्या त्याग करते हैं - सीधी तुलना">What You Sacrifice - Direct Comparison</h3>
+                <div class="sacrifice-grid" id="sacrificeGrid">
+                    <!-- Sacrifice comparison will be populated here -->
+                </div>
+            </div>
+            
+            <div class="sacrifice-table-section" id="sacrificeTableSection">
+                <h3 data-en="Sacrifice Summary Table" data-hi="त्याग सारांश तालिका">Sacrifice Summary Table</h3>
+                <div class="sacrifice-table" id="sacrificeTable">
+                    <!-- Sacrifice table will be populated here -->
+                </div>
+            </div>
+            
+            <div class="radar-charts-section" id="radarChartsSection">
+                <h3 data-en="Visual Comparison" data-hi="दृश्य तुलना">Visual Comparison</h3>
+                <div class="radar-charts-grid" id="radarChartsGrid">
+                    <!-- Radar charts will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Simple error checking
+        window.addEventListener('load', function() {
+            console.log('Page loaded successfully');
+            
+            // Check if main functions are available
+            if (typeof toggleTheme !== 'function') {
+                console.error('toggleTheme function not found!');
+            }
+            if (typeof analyzeDecision !== 'function') {
+                console.error('analyzeDecision function not found!');
+            }
+            if (typeof Chart === 'undefined') {
+                console.error('Chart.js not loaded!');
+            }
+        });
+        
+        // Global error handler
+        window.addEventListener('error', function(e) {
+            console.error('Global error:', e.error);
+        });
+    </script>
+</body>
+</html>

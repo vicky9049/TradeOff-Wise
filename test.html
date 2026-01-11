@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Decision Intelligence Tool</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        button { padding: 10px 20px; margin: 10px; cursor: pointer; }
+        .test-result { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <h1>Decision Intelligence Tool - Test Page</h1>
+    
+    <div class="test-result">
+        <h3>Chart.js Test</h3>
+        <p id="chartTest">Testing Chart.js availability...</p>
+    </div>
+    
+    <div class="test-result">
+        <h3>Function Test</h3>
+        <button onclick="testAnalyzeFunction()">Test Analyze Function</button>
+        <button onclick="testThemeFunction()">Test Theme Function</button>
+        <p id="functionTest">Click buttons to test functions...</p>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Test Chart.js availability
+        document.addEventListener('DOMContentLoaded', function() {
+            const chartTestEl = document.getElementById('chartTest');
+            if (typeof Chart !== 'undefined') {
+                chartTestEl.textContent = '✅ Chart.js loaded successfully!';
+                chartTestEl.style.color = 'green';
+            } else {
+                chartTestEl.textContent = '❌ Chart.js failed to load!';
+                chartTestEl.style.color = 'red';
+            }
+        });
+        
+        function testAnalyzeFunction() {
+            const testEl = document.getElementById('functionTest');
+            try {
+                if (typeof analyzeDecision === 'function') {
+                    testEl.innerHTML = '✅ analyzeDecision function is defined!<br>';
+                } else {
+                    testEl.innerHTML = '❌ analyzeDecision function not found!<br>';
+                }
+                
+                if (typeof toggleTheme === 'function') {
+                    testEl.innerHTML += '✅ toggleTheme function is defined!';
+                } else {
+                    testEl.innerHTML += '❌ toggleTheme function not found!';
+                }
+            } catch (error) {
+                testEl.innerHTML = '❌ Error: ' + error.message;
+                testEl.style.color = 'red';
+            }
+        }
+        
+        function testThemeFunction() {
+            try {
+                toggleTheme();
+                document.getElementById('functionTest').innerHTML = '✅ Theme toggle executed successfully!';
+            } catch (error) {
+                document.getElementById('functionTest').innerHTML = '❌ Theme toggle error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>

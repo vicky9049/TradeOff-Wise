@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - Decision Intelligence Tool</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f0f0f0; }
+        .debug-panel { background: white; padding: 20px; margin: 10px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; }
+        button:hover { background: #0056b3; }
+        #console-output { background: #000; color: #0f0; padding: 10px; font-family: monospace; height: 200px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Decision Intelligence Tool - Debug Panel</h1>
+    
+    <div class="debug-panel">
+        <h3>📋 System Checks</h3>
+        <div id="system-checks">
+            <p class="info">Running system checks...</p>
+        </div>
+    </div>
+    
+    <div class="debug-panel">
+        <h3>🧪 Function Tests</h3>
+        <button onclick="testThemeToggle()">Test Theme Toggle</button>
+        <button onclick="testAnalyzeFunction()">Test Analyze Function</button>
+        <button onclick="testChartJS()">Test Chart.js</button>
+        <div id="function-results"></div>
+    </div>
+    
+    <div class="debug-panel">
+        <h3>📊 Console Output</h3>
+        <div id="console-output"></div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Capture console logs
+        const originalLog = console.log;
+        const originalError = console.error;
+        const consoleOutput = document.getElementById('console-output');
+        
+        function addToConsole(message, type = 'log') {
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#f00' : '#0f0';
+            consoleOutput.innerHTML += `<div style="color: ${color}">[${timestamp}] ${message}</div>`;
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            addToConsole(args.join(' '), 'log');
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            addToConsole(args.join(' '), 'error');
+        };
+        
+        // System checks
+        document.addEventListener('DOMContentLoaded', function() {
+            const checksDiv = document.getElementById('system-checks');
+            let checks = [];
+            
+            // Check Chart.js
+            if (typeof Chart !== 'undefined') {
+                checks.push('<p class="success">✅ Chart.js loaded successfully</p>');
+            } else {
+                checks.push('<p class="error">❌ Chart.js failed to load</p>');
+            }
+            
+            // Check decision engine
+            if (typeof decisionEngine !== 'undefined') {
+                checks.push('<p class="success">✅ Decision engine initialized</p>');
+            } else {
+                checks.push('<p class="error">❌ Decision engine not found</p>');
+            }
+            
+            // Check functions
+            if (typeof toggleTheme === 'function') {
+                checks.push('<p class="success">✅ toggleTheme function available</p>');
+            } else {
+                checks.push('<p class="error">❌ toggleTheme function missing</p>');
+            }
+            
+            if (typeof analyzeDecision === 'function') {
+                checks.push('<p class="success">✅ analyzeDecision function available</p>');
+            } else {
+                checks.push('<p class="error">❌ analyzeDecision function missing</p>');
+            }
+            
+            checksDiv.innerHTML = checks.join('');
+        });
+        
+        function testThemeToggle() {
+            const resultsDiv = document.getElementById('function-results');
+            try {
+                toggleTheme();
+                resultsDiv.innerHTML = '<p class="success">✅ Theme toggle executed successfully!</p>';
+            } catch (error) {
+                resultsDiv.innerHTML = `<p class="error">❌ Theme toggle error: ${error.message}</p>`;
+            }
+        }
+        
+        function testAnalyzeFunction() {
+            const resultsDiv = document.getElementById('function-results');
+            try {
+                // Create mock elements for testing
+                if (!document.getElementById('problemInput')) {
+                    document.body.innerHTML += `
+                        <input type="text" id="problemInput" value="Test problem" style="display:none;">
+                        <input type="range" id="budgetSlider" value="50" style="display:none;">
+                        <input type="range" id="riskSlider" value="50" style="display:none;">
+                        <input type="range" id="timelineSlider" value="50" style="display:none;">
+                        <button id="analyzeBtn" style="display:none;"><span id="btnText">Test</span><span id="loadingSpinner" class="hidden"></span></button>
+                    `;
+                }
+                
+                analyzeDecision();
+                resultsDiv.innerHTML = '<p class="success">✅ Analyze function started successfully!</p>';
+            } catch (error) {
+                resultsDiv.innerHTML = `<p class="error">❌ Analyze function error: ${error.message}</p>`;
+            }
+        }
+        
+        function testChartJS() {
+            const resultsDiv = document.getElementById('function-results');
+            try {
+                if (typeof Chart === 'undefined') {
+                    resultsDiv.innerHTML = '<p class="error">❌ Chart.js not available</p>';
+                    return;
+                }
+                
+                // Create a test canvas
+                const canvas = document.createElement('canvas');
+                canvas.width = 200;
+                canvas.height = 200;
+                canvas.style.display = 'none';
+                document.body.appendChild(canvas);
+                
+                const ctx = canvas.getContext('2d');
+                new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['A', 'B', 'C'],
+                        datasets: [{
+                            data: [1, 2, 3],
+                            backgroundColor: 'rgba(99, 102, 241, 0.2)'
+                        }]
+                    }
+                });
+                
+                resultsDiv.innerHTML = '<p class="success">✅ Chart.js radar chart created successfully!</p>';
+            } catch (error) {
+                resultsDiv.innerHTML = `<p class="error">❌ Chart.js test error: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
